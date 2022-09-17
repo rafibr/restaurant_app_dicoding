@@ -1,56 +1,65 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pmvvm/pmvvm.dart';
+import 'package:restaurant_app/base_view_model.dart';
+import 'package:restaurant_app/routes.dart';
+import 'package:restaurant_app/style/colors.style.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+// screen height
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return MVVM<SplashScreenViewModel>.builder(
-      viewModel: SplashScreenViewModel(),
+      viewModel: SplashScreenViewModel(screenWidth),
       viewBuilder: (context, vm) {
         return Scaffold(
-          body: SafeArea(
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: colorStyle.fourth,
-                  ),
-                  child: Image.asset(
-                    'assets/img/logo.png',
-                    centerSlice:  Rect.fromLTRB(
-                      0,
-                      0,
-                      0,
-                      0,
+          body: AnimatedContainer(
+            width: vm.scrHeight,
+            duration: const Duration(milliseconds: 1000),
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: appColor.quaternaryColor,
                     ),
-                    width: 150,
-                    height: 150,
-                    colorBlendMode: BlendMode.darken,
-                    filterQuality: FilterQuality.high,
-                    scale: 0.5,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.4),
-                        Colors.black.withOpacity(0.6),
-                        Colors.black.withOpacity(0.8),
-                      ],
+                    child: Image.asset(
+                      'assets/img/logo.png',
+                      centerSlice: Rect.fromLTRB(
+                        0,
+                        0,
+                        0,
+                        0,
+                      ),
+                      width: 150,
+                      height: 150,
+                      colorBlendMode: BlendMode.darken,
+                      filterQuality: FilterQuality.high,
+                      scale: 0.5,
                     ),
                   ),
-                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.4),
+                          Colors.black.withOpacity(0.6),
+                          Colors.black.withOpacity(0.9),
+                        ],
+                      ),
+                    ),
+                  ),
 
-                // content
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Container(
+                  // content
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -70,12 +79,11 @@ class SplashScreen extends StatelessWidget {
                               RichText(
                                   text: TextSpan(children: [
                                 TextSpan(
-                                  text: 'GO',
-                                  style: TextStyle(
+                                  text: 'Nongs',
+                                  style: GoogleFonts.signikaNegative(
                                     fontSize: 50,
-                                    color: colorStyle.primary,
+                                    color: appColor.quinaryTextColor,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: 'Montserrat',
                                     letterSpacing: 1.5,
                                     shadows: [
                                       Shadow(
@@ -88,13 +96,11 @@ class SplashScreen extends StatelessWidget {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'rengan',
-                                  style: TextStyle(
+                                  text: 'kuy',
+                                  style: GoogleFonts.acme(
                                     fontSize: 32,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: 'Roboto',
-                                    letterSpacing: 1.5,
                                     shadows: [
                                       Shadow(
                                         color: Colors.black,
@@ -111,21 +117,21 @@ class SplashScreen extends StatelessWidget {
                               // tagline
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: 20),
+                                width: MediaQuery.of(context).size.width,
                                 child: Text(
-                                  'The best way to taste Indonesian food',
-                                  style: TextStyle(
-                                    color: colorStyle.primary,
+                                  'Nongsky dulssss',
+                                  style: GoogleFonts.acme(
+                                    color: appColor.tertiaryTextColor,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w400,
-                                    fontFamily: 'sans-serif',
                                     fontStyle: FontStyle.italic,
                                     decorationThickness: 1,
                                     letterSpacing: 3,
                                     shadows: [
                                       Shadow(
-                                        color: Colors.white,
-                                        blurRadius: 10,
-                                        offset: Offset(5, 5),
+                                        color: Colors.grey,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 0),
                                       ),
                                     ],
                                     wordSpacing: 3,
@@ -135,9 +141,6 @@ class SplashScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-
-                        // loader
-
                         const CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(Colors.white),
                         ),
@@ -145,8 +148,8 @@ class SplashScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -157,29 +160,23 @@ class SplashScreen extends StatelessWidget {
 
 class SplashScreenViewModel extends ViewModel with BaseViewModel {
   bool isLogin = false;
-  double margin = 0;
+  double scrHeight = 0;
+
+  SplashScreenViewModel(double screenHeight) {
+    scrHeight = screenHeight;
+  }
 
   @override
   void init() async {
     super.init();
     await getInstances();
 
-    isLogin = sharedPref?.getBool(argLoggedIn) ?? false;
-
     // delay the animation
-    Future.delayed(Duration(milliseconds: 2500), () {
-      margin = MediaQuery.of(context).size.width;
+    await Future.delayed(Duration(seconds: 2), () {
+      scrHeight = 0;
       notifyListeners();
       // check if logged in
-      if (isLogin) {
-        // delete all navigation stack
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => MainScreen()),
-          (Route<dynamic> route) => false,
-        );
-      } else {
-        move(context, Routes.intro, replace: true);
-      }
+      move(context, Routes.homePageScreen, replace: true);
     });
 
     notifyListeners();

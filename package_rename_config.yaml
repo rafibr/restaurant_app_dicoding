@@ -1,0 +1,24 @@
+package_rename_config:
+  android:
+    app_name: Nongskuy
+    package_name: com.nongskuy
+
+  ios:
+    app_name: Nongskuy
+    bundle_id: com.nongskuy
+
+  web:
+    app_name: Nongskuy
+    package_name: com.nongskuy
+
+  macos:
+    app_name: Nongskuy
+    package_name: com.nongskuy
+
+  linux:
+    app_name: Nongskuy
+    package_name: com.nongskuy
+
+  windows:
+    app_name: Nongskuy
+    package_name: com.nongskuy

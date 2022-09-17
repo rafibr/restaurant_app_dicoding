@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/home_page_screen.dart';
-import 'package:restaurant_app/splash_screen.dart';
+import 'package:restaurant_app/routes.dart';
+import 'package:restaurant_app/style/text_theme.style.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const NongSkuy(),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class NongSkuy extends StatelessWidget {
+  const NongSkuy({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SplashScreen(),
+      title: 'Nongskuy',
+      theme: ThemeData(textTheme: myTextTheme),
+      initialRoute: Routes.splashScreen,
+      routes: Routes.routes,
     );
   }
 }
