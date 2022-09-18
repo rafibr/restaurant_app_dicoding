@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/detail_restaurant.dart';
@@ -56,7 +54,8 @@ class _HomePageState extends State<HomePage> {
           // pull to refresh
           RefreshIndicator(
         onRefresh: () async {
-          Provider.of<DashboardProvider>(context, listen: false).getAllRestaurant();
+          Provider.of<DashboardProvider>(context, listen: false)
+              .getAllRestaurant();
         },
         child:
             // scroll view
@@ -88,7 +87,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 100, left: 20, right: 20),
+                    margin:
+                        const EdgeInsets.only(top: 100, left: 20, right: 20),
                     // shadow
                     decoration: const BoxDecoration(
                       boxShadow: [
@@ -115,12 +115,14 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ListRestaurant(query: ''),
+                                    builder: (context) =>
+                                        ListRestaurant(query: ''),
                                   ),
                                 );
                               },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   // icon spoon and fork
                                   Icon(
@@ -128,8 +130,9 @@ class _HomePageState extends State<HomePage> {
                                     color: appColor.quaternaryBackgroundColor,
                                   ),
                                   // search field
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.7,
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.7,
                                     child: TextField(
                                       enabled: false,
                                       decoration: const InputDecoration(
@@ -138,7 +141,8 @@ class _HomePageState extends State<HomePage> {
                                         suffixIcon: IconButton(
                                           icon: Icon(
                                             Icons.search,
-                                            color: appColor.quaternaryBackgroundColor,
+                                            color: appColor
+                                                .quaternaryBackgroundColor,
                                           ),
                                           onPressed: null,
                                         ),
@@ -168,7 +172,8 @@ class _HomePageState extends State<HomePage> {
                     );
                   } else if (value.isError) {
                     return Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      margin:
+                          const EdgeInsets.only(top: 20, left: 20, right: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -205,7 +210,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _buildItemMenu({required IconData icon, required String title, required Null Function() onTap}) {
+  _buildItemMenu(
+      {required IconData icon,
+      required String title,
+      required Null Function() onTap}) {
     return InkWell(
       onTap: onTap,
       child: Column(
@@ -225,7 +233,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _buildItemRestaurant({required RestaurantList item, required Null Function() onTap}) {
+  _buildItemRestaurant(
+      {required RestaurantList item, required Null Function() onTap}) {
     return InkWell(
       onTap: onTap,
       child: Card(
@@ -244,7 +253,8 @@ class _HomePageState extends State<HomePage> {
                     topRight: Radius.circular(20),
                   ),
                   image: DecorationImage(
-                    image: NetworkImage(value.imageRestaurantSmall(item.pictureId!)),
+                    image: NetworkImage(
+                        value.imageRestaurantSmall(item.pictureId!)),
                     fit: BoxFit.cover,
                     onError: (exception, stackTrace) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -329,10 +339,11 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           'Random Restaurant',
-                          style: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: appColor.primaryTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline6!.copyWith(
+                                    color: appColor.primaryTextColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         const SizedBox(height: 10),
                         SingleChildScrollView(
@@ -417,10 +428,11 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           'Popular Restaurant',
-                          style: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: appColor.primaryTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline6!.copyWith(
+                                    color: appColor.primaryTextColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         const SizedBox(height: 10),
                         SingleChildScrollView(
@@ -436,7 +448,8 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailRestaurant(
-                                          id: value.popularRestaurantList[0].id!,
+                                          id: value
+                                              .popularRestaurantList[0].id!,
                                         ),
                                       ),
                                     );
@@ -453,7 +466,8 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailRestaurant(
-                                          id: value.popularRestaurantList[1].id!,
+                                          id: value
+                                              .popularRestaurantList[1].id!,
                                         ),
                                       ),
                                     );
@@ -470,7 +484,8 @@ class _HomePageState extends State<HomePage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailRestaurant(
-                                          id: value.popularRestaurantList[2].id!,
+                                          id: value
+                                              .popularRestaurantList[2].id!,
                                         ),
                                       ),
                                     );

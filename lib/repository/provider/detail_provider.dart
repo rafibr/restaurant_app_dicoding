@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/repository/restaurant_repo.dart';
@@ -15,7 +12,7 @@ class DetailProvider extends ChangeNotifier with Helper {
   List<Drink>? drinks;
   List<Drink>? allDrinks;
 
-  RestaurantRepo _restaurantRepo = RestaurantRepo();
+  final RestaurantRepo _restaurantRepo = RestaurantRepo();
 
   bool isLoading = false;
   bool isError = false;
@@ -76,8 +73,14 @@ class DetailProvider extends ChangeNotifier with Helper {
       foods = allFoods;
       drinks = allDrinks;
     } else {
-      foods = allFoods!.where((element) => element.name!.toLowerCase().contains(value.toLowerCase())).toList();
-      drinks = allDrinks!.where((element) => element.name!.toLowerCase().contains(value.toLowerCase())).toList();
+      foods = allFoods!
+          .where((element) =>
+              element.name!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+      drinks = allDrinks!
+          .where((element) =>
+              element.name!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
     }
     notifyListeners();
   }

@@ -137,7 +137,7 @@ class ShimmerLoaderGrid extends StatelessWidget {
               ],
             ),
           ),
-         ],
+        ],
       ),
     );
   }

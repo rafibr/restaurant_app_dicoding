@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:readmore/readmore.dart';
-import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/repository/provider/detail_provider.dart';
-import 'package:restaurant_app/repository/restaurant_repo.dart';
 import 'package:restaurant_app/style/colors.style.dart';
 import 'package:restaurant_app/style/shimmer_loader.dart';
 
@@ -34,7 +32,9 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Provider.of<DetailProvider>(context).restaurantDetail?.name ?? 'Detail Restaurant'),
+        title: Text(
+            Provider.of<DetailProvider>(context).restaurantDetail?.name ??
+                'Detail Restaurant'),
         backgroundColor: appColor.quinaryBackgroundColor,
       ),
       body: Consumer<DetailProvider>(
@@ -47,7 +47,9 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                       provider.init(widget.id);
                     });
                   },
-                  child: provider.showReview ? _buildReview(provider) : _buildBody(provider),
+                  child: provider.showReview
+                      ? _buildReview(provider)
+                      : _buildBody(provider),
                 );
         },
       ),
@@ -203,7 +205,8 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
             height: 200,
             width: double.infinity,
             child: Image.network(
-              provider.imageRestaurantMedium(provider.restaurantDetail?.pictureId ?? ''),
+              provider.imageRestaurantMedium(
+                  provider.restaurantDetail?.pictureId ?? ''),
               fit: BoxFit.cover,
             ),
           ),
@@ -223,10 +226,12 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                     ...provider.restaurantDetail?.categories?.map((e) {
                           // pill category
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: appColor.quinaryBackgroundColor,
-                              borderRadius: BorderRadius.all(Radius.circular(50)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
                             ),
                             child: Text(
                               e.name!,
@@ -292,7 +297,8 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 1,
                               blurRadius: 7,
-                              offset: const Offset(0, 3), // changes position of shadow
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
                             ),
                           ],
                         ),
@@ -414,7 +420,7 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                       // back to detail
                       child: Container(
                         child: Row(
-                          children: [
+                          children: const [
                             Text(
                               'Back to Detail',
                               style: TextStyle(
@@ -422,7 +428,7 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8),
                             Icon(
                               Icons.arrow_back_ios,
                               size: 12,
@@ -443,7 +449,8 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 1,
                               blurRadius: 7,
-                              offset: const Offset(0, 3), // changes position of shadow
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
                             ),
                           ],
                         ),
@@ -509,7 +516,7 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
             margin: const EdgeInsets.only(bottom: 16),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: appColor.quinaryBackgroundColor,
+                backgroundColor: appColor.quinaryBackgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -549,23 +556,27 @@ class _DetailRestaurantState extends State<DetailRestaurant> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        provider.restaurantDetail?.customerReviews?[index].name ?? '',
+                        provider.restaurantDetail?.customerReviews?[index]
+                                .name ??
+                            '',
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                     Text(
-                      provider.restaurantDetail?.customerReviews?[index].date ?? '',
+                      provider.restaurantDetail?.customerReviews?[index].date ??
+                          '',
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 // Text(
-                  // provider.restaurantDetail?.customerReviews?[index].review ?? '',
-                  // style: Theme.of(context).textTheme.subtitle2,
+                // provider.restaurantDetail?.customerReviews?[index].review ?? '',
+                // style: Theme.of(context).textTheme.subtitle2,
                 // ),
                 ReadMoreText(
-                  provider.restaurantDetail?.customerReviews?[index].review ?? '',
+                  provider.restaurantDetail?.customerReviews?[index].review ??
+                      '',
                   trimLines: 3,
                   colorClickableText: appColor.quinaryBackgroundColor,
                   trimMode: TrimMode.Line,

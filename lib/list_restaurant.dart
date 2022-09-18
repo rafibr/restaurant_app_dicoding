@@ -1,12 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/detail_restaurant.dart';
-import 'package:restaurant_app/model/restaurant.dart';
-import 'package:restaurant_app/repository/provider/dashboard_provider.dart';
 import 'package:restaurant_app/repository/provider/list_provider.dart';
-import 'package:restaurant_app/repository/restaurant_repo.dart';
 import 'package:restaurant_app/style/colors.style.dart';
 import 'package:restaurant_app/style/shimmer_loader.dart';
 
@@ -32,7 +27,8 @@ class _ListRestaurantState extends State<ListRestaurant> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ListProvider>(context, listen: false).searchRestaurant(widget.query);
+    Provider.of<ListProvider>(context, listen: false)
+        .searchRestaurant(widget.query);
   }
 
   @override
@@ -44,17 +40,18 @@ class _ListRestaurantState extends State<ListRestaurant> {
         actions: [
           _onSearch
               ? IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     setState(() {
                       _onSearch = false;
                       _searchController.clear();
-                      Provider.of<ListProvider>(context, listen: false).getAllRestaurant();
+                      Provider.of<ListProvider>(context, listen: false)
+                          .getAllRestaurant();
                     });
                   },
                 )
               : IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () {
                     setState(() {
                       _onSearch = true;
@@ -64,7 +61,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
 
           // sort
           IconButton(
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.sort),
             onPressed: () {
               _showSortDialog();
             },
@@ -136,7 +133,7 @@ class _ListRestaurantState extends State<ListRestaurant> {
                 const SizedBox(
                   height: 100,
                 ),
-                Text('Tidak ada restoran yang ditemukan :(')
+                const Text('Tidak ada restoran yang ditemukan :(')
               ],
             );
           } else {
@@ -178,7 +175,8 @@ class _ListRestaurantState extends State<ListRestaurant> {
                                   borderRadius: BorderRadius.circular(10),
                                   image: DecorationImage(
                                     image: NetworkImage(
-                                      provider.imageRestaurantSmall(provider.restaurantList[index].pictureId!),
+                                      provider.imageRestaurantSmall(provider
+                                          .restaurantList[index].pictureId!),
                                     ),
                                     fit: BoxFit.cover,
                                   ),
@@ -218,7 +216,8 @@ class _ListRestaurantState extends State<ListRestaurant> {
                                           color: Colors.yellow,
                                         ),
                                         Text(
-                                          provider.restaurantList[index].rating!.toString(),
+                                          provider.restaurantList[index].rating!
+                                              .toString(),
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -302,7 +301,8 @@ class _ListRestaurantState extends State<ListRestaurant> {
                       ),
                       DropdownButton<String>(
                         value: provider.sortBy,
-                        items: <String>['name', 'rating', 'city'].map((String value) {
+                        items: <String>['name', 'rating', 'city']
+                            .map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),

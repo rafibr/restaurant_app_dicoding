@@ -4,7 +4,6 @@ import 'package:restaurant_app/repository/provider/dashboard_provider.dart';
 import 'package:restaurant_app/repository/provider/detail_provider.dart';
 import 'package:restaurant_app/repository/provider/list_provider.dart';
 import 'package:restaurant_app/routes.dart';
-import 'package:restaurant_app/style/text_theme.style.dart';
 
 void main() {
   runApp(

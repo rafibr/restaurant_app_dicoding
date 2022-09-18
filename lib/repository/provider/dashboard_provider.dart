@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/endpoint.dart';
 import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/repository/restaurant_repo.dart';
 import 'package:restaurant_app/utils/helper.dart';
@@ -20,7 +17,7 @@ class DashboardProvider extends ChangeNotifier with Helper {
 
   List<RestaurantList> searchRestaurantList = [];
 
-  RestaurantRepo _restaurantRepo = RestaurantRepo();
+  final RestaurantRepo _restaurantRepo = RestaurantRepo();
 
   bool isLoading = true;
   bool isError = false;
@@ -41,7 +38,6 @@ class DashboardProvider extends ChangeNotifier with Helper {
   Future<Restaurant> getAllRestaurant() async {
     isLoading = true;
     notifyListeners();
-
 
     try {
       restaurants = await _restaurantRepo.getListRestaurant();

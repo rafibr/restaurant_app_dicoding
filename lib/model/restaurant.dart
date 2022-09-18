@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'restaurant.g.dart';
@@ -83,7 +82,8 @@ class Restaurant {
 
   Restaurant({this.error, this.message, this.count, this.restaurants});
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) => _$RestaurantFromJson(json);
+  factory Restaurant.fromJson(Map<String, dynamic> json) =>
+      _$RestaurantFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestaurantToJson(this);
 }
@@ -106,7 +106,8 @@ class RestaurantList {
     this.rating,
   });
 
-  factory RestaurantList.fromJson(Map<String, dynamic> json) => _$RestaurantListFromJson(json);
+  factory RestaurantList.fromJson(Map<String, dynamic> json) =>
+      _$RestaurantListFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestaurantListToJson(this);
 
@@ -124,7 +125,6 @@ class RestaurantDetail {
   List<Categories>? categories;
   Menus? menus;
   List<CustomerReviews>? customerReviews;
-  
 
   RestaurantDetail({
     this.id,
@@ -136,7 +136,8 @@ class RestaurantDetail {
     this.menus,
   });
 
-  factory RestaurantDetail.fromJson(Map<String, dynamic> json) => _$RestaurantDetailFromJson(json);
+  factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
+      _$RestaurantDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestaurantDetailToJson(this);
 }
@@ -181,7 +182,8 @@ class Categories {
 
   Categories({this.name});
 
-  factory Categories.fromJson(Map<String, dynamic> json) => _$CategoriesFromJson(json);
+  factory Categories.fromJson(Map<String, dynamic> json) =>
+      _$CategoriesFromJson(json);
 
   Map<String, dynamic> toJson() => _$CategoriesToJson(this);
 }
@@ -194,7 +196,8 @@ class CustomerReviews {
 
   CustomerReviews({this.name, this.review, this.date});
 
-  factory CustomerReviews.fromJson(Map<String, dynamic> json) => _$CustomerReviewsFromJson(json);
+  factory CustomerReviews.fromJson(Map<String, dynamic> json) =>
+      _$CustomerReviewsFromJson(json);
 
   Map<String, dynamic> toJson() => _$CustomerReviewsToJson(this);
 }

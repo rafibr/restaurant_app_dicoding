@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/endpoint.dart';
 import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/repository/restaurant_repo.dart';
 import 'package:restaurant_app/utils/helper.dart';
@@ -13,7 +12,7 @@ class ListProvider extends ChangeNotifier with Helper {
   List<RestaurantList> restaurantList = [];
   List<RestaurantList> allRestaurantList = [];
 
-  RestaurantRepo _restaurantRepo = RestaurantRepo();
+  final RestaurantRepo _restaurantRepo = RestaurantRepo();
 
   bool isLoading = false;
   bool isError = false;

@@ -1,15 +1,13 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
-import 'package:flutter/services.dart';
 import 'package:restaurant_app/data/endpoint.dart';
 import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/repository/provider/detail_provider.dart';
 
 class RestaurantRepo {
-  Dio _dio = Dio();
+  final Dio _dio = Dio();
 
   // get list restaurant
   Future<Restaurant> getListRestaurant() async {
