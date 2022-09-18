@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'restaurant.g.dart';
 
 // {
+//   "error": false,
+//   "message": "success",
 //   "restaurants": [
 //     {
 //       "id": "rqdv5juczeskfw1e867",
@@ -73,19 +76,16 @@ part 'restaurant.g.dart';
 
 @JsonSerializable()
 class Restaurant {
+  bool? error;
+  String? message;
+  int? count;
   List<RestaurantList>? restaurants;
 
-  Restaurant({this.restaurants});
+  Restaurant({this.error, this.message, this.count, this.restaurants});
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) =>
-      _$RestaurantFromJson(json);
+  factory Restaurant.fromJson(Map<String, dynamic> json) => _$RestaurantFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestaurantToJson(this);
-
-  @override
-  String toString() {
-    return 'Restaurant{restaurants: $restaurants}';
-  }
 }
 
 @JsonSerializable()
@@ -96,23 +96,49 @@ class RestaurantList {
   String? pictureId;
   String? city;
   double? rating;
-  Menus? menus;
 
-  RestaurantList(
-      {this.id,
-      this.name,
-      this.description,
-      this.pictureId,
-      this.city,
-      this.rating,
-      this.menus});
+  RestaurantList({
+    this.id,
+    this.name,
+    this.description,
+    this.pictureId,
+    this.city,
+    this.rating,
+  });
 
-  factory RestaurantList.fromJson(Map<String, dynamic> json) =>
-      _$RestaurantListFromJson(json);
+  factory RestaurantList.fromJson(Map<String, dynamic> json) => _$RestaurantListFromJson(json);
 
   Map<String, dynamic> toJson() => _$RestaurantListToJson(this);
 
   where(Function(dynamic element) param0) {}
+}
+
+@JsonSerializable()
+class RestaurantDetail {
+  String? id;
+  String? name;
+  String? description;
+  String? pictureId;
+  String? city;
+  double? rating;
+  List<Categories>? categories;
+  Menus? menus;
+  List<CustomerReviews>? customerReviews;
+  
+
+  RestaurantDetail({
+    this.id,
+    this.name,
+    this.description,
+    this.pictureId,
+    this.city,
+    this.rating,
+    this.menus,
+  });
+
+  factory RestaurantDetail.fromJson(Map<String, dynamic> json) => _$RestaurantDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RestaurantDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -147,4 +173,28 @@ class Drink {
   factory Drink.fromJson(Map<String, dynamic> json) => _$DrinkFromJson(json);
 
   Map<String, dynamic> toJson() => _$DrinkToJson(this);
+}
+
+@JsonSerializable()
+class Categories {
+  String? name;
+
+  Categories({this.name});
+
+  factory Categories.fromJson(Map<String, dynamic> json) => _$CategoriesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CategoriesToJson(this);
+}
+
+@JsonSerializable()
+class CustomerReviews {
+  String? name;
+  String? review;
+  String? date;
+
+  CustomerReviews({this.name, this.review, this.date});
+
+  factory CustomerReviews.fromJson(Map<String, dynamic> json) => _$CustomerReviewsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CustomerReviewsToJson(this);
 }

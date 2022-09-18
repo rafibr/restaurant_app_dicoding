@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:pmvvm/pmvvm.dart';
 import 'package:restaurant_app/detail_restaurant.dart';
 import 'package:restaurant_app/list_restaurant.dart';
 import 'package:restaurant_app/model/restaurant.dart';
-import 'package:restaurant_app/repository/restaurant_repo.dart';
+import 'package:restaurant_app/repository/provider/dashboard_provider.dart';
 import 'package:restaurant_app/style/colors.style.dart';
 import 'package:restaurant_app/style/shimmer_loader.dart';
 
@@ -18,36 +21,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // scrollview
   final ScrollController _scrollController = ScrollController();
-  Restaurant? itemRestaurant;
-  Restaurant? itemRandomRestaurant;
-  Restaurant? itemPopularRestaurant;
 
   String goodWhat = 'Good Morning';
 
   @override
   void initState() {
     super.initState();
-
-    // get data from lib/data/local_restaurant.dart
-    RestaurantRepo().getAllRestaurant().then((value) {
-      setState(() {
-        itemRestaurant = value;
-      });
-    });
-
-    // get 3 random data from lib/data/local_restaurant.dart
-    RestaurantRepo().get3RandomRestaurant().then((value) {
-      setState(() {
-        itemRandomRestaurant = value;
-      });
-    });
-
-    // populare 3 restaurant base on rating
-    RestaurantRepo().get3PopularRestaurant().then((value) {
-      setState(() {
-        itemPopularRestaurant = value;
-      });
-    });
 
     // get time
     var now = DateTime.now();
@@ -60,6 +39,9 @@ class _HomePageState extends State<HomePage> {
     } else if (now.hour >= 19 && now.hour < 24) {
       goodWhat = 'Good Night';
     }
+
+    // get list restaurant
+    Provider.of<DashboardProvider>(context, listen: false).getAllRestaurant();
   }
 
   @override
@@ -70,316 +52,155 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Nongskuy'),
         backgroundColor: appColor.quinaryBackgroundColor,
       ),
-      body: FutureBuilder<dynamic>(
-        future: RestaurantRepo().getAllRestaurant(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
+      body:
+          // pull to refresh
+          RefreshIndicator(
+        onRefresh: () async {
+          Provider.of<DashboardProvider>(context, listen: false).getAllRestaurant();
+        },
+        child:
+            // scroll view
+            SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Stack(
                 children: [
-                  Stack(
-                    children: [
-                      Container(
-                        height: 150,
-                        decoration: const BoxDecoration(
-                          color: appColor.quaternaryBackgroundColor,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 20, left: 20),
-                          width: double.infinity,
-                          child: Text(
-                            '$goodWhat, \nWhat do you want to eat?',
-                            style: Theme.of(context).textTheme.headline6!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 100, left: 20, right: 20),
-                        // shadow
-                        decoration: const BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 10,
-                              spreadRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20),
-                              bottomLeft: Radius.circular(20),
-                            ),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // 3 menu with icon
-                                    Expanded(
-                                      child: _buildItemMenu(
-                                        title: 'High Rated',
-                                        icon: Icons.star,
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ListRestaurant(
-                                                query: 'high',
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    // vertical divider
-                                    Container(
-                                      height: 50,
-                                      width: 1,
-                                      color: Colors.grey,
-                                    ),
-                                    Expanded(
-                                      child: _buildItemMenu(
-                                        title: 'Restaurant',
-                                        icon: Icons.restaurant,
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ListRestaurant(
-                                                query: 'all',
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    // vertical divider 
-                                    Container(
-                                      height: 50,
-                                      width: 1,
-                                      color: Colors.grey,
-                                    ),
-                                    Expanded(
-                                      child: _buildItemMenu(
-                                        icon: Icons.favorite,
-                                        title: 'Favorite',
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ListRestaurant(
-                                                query: 'favorite',
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  // Random Restaurant
                   Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          'Random Restaurant',
-                          style: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: appColor.primaryTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                child: _buildItemRestaurant(
-                                  item: itemRandomRestaurant!.restaurants![0],
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailRestaurant(
-                                          id: itemRandomRestaurant!.restaurants![0].id!,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              SizedBox(
-                                width: 200,
-                                child: _buildItemRestaurant(
-                                  item: itemRandomRestaurant!.restaurants![1],
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailRestaurant(
-                                          id: itemRandomRestaurant!.restaurants![1].id!,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              SizedBox(
-                                width: 200,
-                                child: _buildItemRestaurant(
-                                  item: itemRandomRestaurant!.restaurants![2],
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailRestaurant(
-                                          id: itemRandomRestaurant!.restaurants![2].id!,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                    height: 150,
+                    decoration: const BoxDecoration(
+                      color: appColor.quaternaryBackgroundColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 20, left: 20),
+                      width: double.infinity,
+                      child: Text(
+                        '$goodWhat, \nWhere do you want to eat?',
+                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 100, left: 20, right: 20),
+                    // shadow
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          spreadRadius: 5,
                         ),
                       ],
                     ),
-                  ),
-
-                  // popular restaurant
-                  Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          'Popular Restaurant',
-                          style: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: appColor.primaryTextColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
                         ),
-                        const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 200,
-                                child: _buildItemRestaurant(
-                                  item: itemPopularRestaurant!.restaurants![0],
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailRestaurant(
-                                          id: itemPopularRestaurant!.restaurants![0].id!,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ListRestaurant(query: ''),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // icon spoon and fork
+                                  Icon(
+                                    Icons.restaurant,
+                                    color: appColor.quaternaryBackgroundColor,
+                                  ),
+                                  // search field
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.7,
+                                    child: TextField(
+                                      enabled: false,
+                                      decoration: const InputDecoration(
+                                        hintText: 'Where do you want to eat?',
+                                        border: InputBorder.none,
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            Icons.search,
+                                            color: appColor.quaternaryBackgroundColor,
+                                          ),
+                                          onPressed: null,
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 10),
-                              SizedBox(
-                                width: 200,
-                                child: _buildItemRestaurant(
-                                  item: itemPopularRestaurant!.restaurants![1],
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailRestaurant(
-                                          id: itemPopularRestaurant!.restaurants![1].id!,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              SizedBox(
-                                width: 200,
-                                child: _buildItemRestaurant(
-                                  item: itemPopularRestaurant!.restaurants![2],
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailRestaurant(
-                                          id: itemPopularRestaurant!.restaurants![2].id!,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
-            );
-          } else {
-            // shimmer
-            return ShimmerLoader(
-              isLoading: true,
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: Container(
-                        width: 50,
-                        height: 50,
-                        color: Colors.white,
+              Consumer<DashboardProvider>(
+                builder: (context, value, _) {
+                  if (!value.isLoading && !value.isError) {
+                    return Column(
+                      children: [
+                        // random restaurant
+                        _buildRandomRestaurant(),
+                        // popular restaurant
+                        _buildPopularRestaurant(),
+                      ],
+                    );
+                  } else if (value.isError) {
+                    return Container(
+                      margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Center(
+                            child: Column(
+                              children: [
+                                // image error
+                                Image.asset(
+                                  'assets/img/ic_launcher.png',
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Terjadi kesalahan saat memuat data, silahkan muat ulang halaman',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      title: Container(
-                        width: 100,
-                        height: 20,
-                        color: Colors.white,
-                      ),
-                      subtitle: Container(
-                        width: 50,
-                        height: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return ShimmerLoaderGrid();
+                  }
                 },
               ),
-            );
-          }
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -414,19 +235,28 @@ class _HomePageState extends State<HomePage> {
         // column
         child: Column(
           children: [
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+            Consumer<DashboardProvider>(builder: (context, value, child) {
+              return Container(
+                height: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  image: DecorationImage(
+                    image: NetworkImage(value.imageRestaurantSmall(item.pictureId!)),
+                    fit: BoxFit.cover,
+                    onError: (exception, stackTrace) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Terjadi kesalahan saat memuat gambar'),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                image: DecorationImage(
-                  image: NetworkImage(item.pictureId.toString()),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+              );
+            }),
             Container(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -480,6 +310,182 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  _buildRandomRestaurant() {
+    return Consumer<DashboardProvider>(
+      builder: (context, value, child) {
+        return Column(
+          children: [
+            value.isLoading && !value.isError
+                ? ShimmerLoaderGrid()
+                :
+                // random restaurant
+                Container(
+                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Random Restaurant',
+                          style: Theme.of(context).textTheme.headline6!.copyWith(
+                                color: appColor.primaryTextColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 10),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                child: _buildItemRestaurant(
+                                  item: value.randomRestaurantList[0],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailRestaurant(
+                                          id: value.randomRestaurantList[0].id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: 200,
+                                child: _buildItemRestaurant(
+                                  item: value.randomRestaurantList[1],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailRestaurant(
+                                          id: value.randomRestaurantList[1].id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: 200,
+                                child: _buildItemRestaurant(
+                                  item: value.randomRestaurantList[2],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailRestaurant(
+                                          id: value.randomRestaurantList[2].id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          ],
+        );
+      },
+    );
+  }
+
+  _buildPopularRestaurant() {
+    return Consumer<DashboardProvider>(
+      builder: (context, value, child) {
+        return Column(
+          children: [
+            // popular restaurant
+            value.isLoading && !value.isError
+                ? ShimmerLoaderGrid()
+                : // popular restaurant
+                Container(
+                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Popular Restaurant',
+                          style: Theme.of(context).textTheme.headline6!.copyWith(
+                                color: appColor.primaryTextColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 10),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                child: _buildItemRestaurant(
+                                  item: value.popularRestaurantList[0],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailRestaurant(
+                                          id: value.popularRestaurantList[0].id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: 200,
+                                child: _buildItemRestaurant(
+                                  item: value.popularRestaurantList[1],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailRestaurant(
+                                          id: value.popularRestaurantList[1].id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: 200,
+                                child: _buildItemRestaurant(
+                                  item: value.popularRestaurantList[2],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailRestaurant(
+                                          id: value.popularRestaurantList[2].id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          ],
+        );
+      },
     );
   }
 }
